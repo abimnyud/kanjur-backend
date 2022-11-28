@@ -1,30 +1,20 @@
 package com.enjoy.kanjurbackend.service;
 
+import org.springframework.data.domain.Page;
+
+import com.enjoy.kanjurbackend.dto.user.*;
 import com.enjoy.kanjurbackend.model.User;
-import com.enjoy.kanjurbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-@Service
-@Transactional
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    public List<User> listAllUser() {
-        return userRepository.findAll();
-    }
+public interface UserService {
+    User create(CreateUserDto dto);
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
+    User login(UserLoginDto dto);
+ 
+    User find(Integer userId);
 
-    public User getUser(Integer id) {
-        return userRepository.findById(id).get();
-    }
-
-    public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
-    }
+    Page<User> find(Integer skip, Integer take);
+ 
+    User update(Integer userId, UpdateUserDto dto);
+ 
+    boolean delete(Integer userId);
 }
