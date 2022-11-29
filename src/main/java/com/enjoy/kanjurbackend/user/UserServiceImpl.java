@@ -1,10 +1,12 @@
-package com.enjoy.kanjurbackend.service;
+package com.enjoy.kanjurbackend.user;
 
-import com.enjoy.kanjurbackend.dto.user.CreateUserDto;
-import com.enjoy.kanjurbackend.dto.user.UpdateUserDto;
-import com.enjoy.kanjurbackend.dto.user.UserLoginDto;
-import com.enjoy.kanjurbackend.model.User;
-import com.enjoy.kanjurbackend.repository.UserRepository;
+import com.enjoy.kanjurbackend.cart.Cart;
+import com.enjoy.kanjurbackend.cart.CartRepository;
+import com.enjoy.kanjurbackend.product.Product;
+import com.enjoy.kanjurbackend.product.ProductRepository;
+import com.enjoy.kanjurbackend.transaction.Transaction;
+import com.enjoy.kanjurbackend.transaction.TransactionRepository;
+import com.enjoy.kanjurbackend.user.dto.*;
 
 // import java.security.SecureRandom;
 
@@ -26,14 +28,23 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
     private EntityManager entityManager;
 
     @Override
     public User create(CreateUserDto dto) {
-        User existsUser = userRepository.findById(Integer.parseInt(dto.id)).get();
+        User existsUser = userRepository.getById(Integer.parseInt(dto.id));
         User user;
 
-        if (existsUser.isDeleted() == true) {
+        if (existsUser != null && existsUser.isDeleted() == true) {
             existsUser.setDeleted(false);
             user = existsUser;
         } else {
@@ -56,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(UserLoginDto dto) {
+    public User login(UserLoginDto dto) throws Error {
         User currentUser = userRepository.getUser(Integer.parseInt(dto.id));
 
         if (currentUser != null) {
@@ -81,15 +92,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> find(Integer skip, Integer take) {
+    public Page<User> find(Integer skip, Integer take, String keyword) {
         Session session = entityManager.unwrap(Session.class);
         Filter filter = session.enableFilter("deletedUserFilter");
         filter.setParameter("isDeleted", false);
 
-        Page<User> userData = userRepository.findAll(PageRequest.of(skip, take));
+        Page<User> userData;
+        if (keyword != null) {
+            userData = userRepository.findAllByNameLikeAndIsDeletedFalse(
+                "%" + keyword + "%", 
+                PageRequest.of(skip, take)
+            );
+        } else {
+            userData = userRepository.findAll(PageRequest.of(skip, take));
+        }
 
         session.disableFilter("deletedUserFilter");
         return userData;
+    }
+
+    @Override
+    public Page<Product> getUserProduct(Integer userId, Integer skip, Integer take) {
+        return productRepository.findByCreatedBy(userId, PageRequest.of(skip, take));
+    }
+
+    @Override
+    public Page<Cart> getUserCart(Integer userId, Integer skip, Integer take) {
+        return cartRepository.findByUserId(userId, PageRequest.of(skip, take));
+    }
+
+    @Override
+    public Page<Transaction> getUserTransaction(Integer userId, Integer skip, Integer take) {
+        return transactionRepository.findByUserId(userId, PageRequest.of(skip, take));
     }
 
     @Override
@@ -104,6 +138,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean delete(Integer userId) {
+        User existsUser = userRepository.getById(userId);
+        if (existsUser != null && existsUser.isDeleted() == true) {
+            return false;
+        }
+
         userRepository.deleteById(userId);
 
         return true;

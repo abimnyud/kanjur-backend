@@ -1,4 +1,4 @@
-package com.enjoy.kanjurbackend.dto.product;
+package com.enjoy.kanjurbackend.product.dto;
 
 public class CreateProductDto {
     public String name;

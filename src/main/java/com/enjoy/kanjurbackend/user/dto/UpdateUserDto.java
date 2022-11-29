@@ -1,4 +1,4 @@
-package com.enjoy.kanjurbackend.dto.user;
+package com.enjoy.kanjurbackend.user.dto;
 
 public class UpdateUserDto {
     public String name;

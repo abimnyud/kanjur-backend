@@ -32,17 +32,16 @@ CREATE TABLE products (
   image               varchar(500) NOT NULL,
   description         varchar(500) NOT NULL,
   price               decimal(12, 2) NOT NULL,
-  stock               bigint NULL,
+  stock               integer NULL,
   created_by          bigint NOT NULL,
   created_at          timestamp DEFAULT NOW(),
   updated_at          timestamp DEFAULT NOW(),
   is_deleted          bit(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   FOREIGN KEY (created_by) REFERENCES users(id),
-  FOREIGN KEY (transaction_id) REFERENCES transactions(id)
 );
 
-CREATE TABLE cart (
+CREATE TABLE carts (
   id            bigint auto_increment,
   user_id       bigint NOT NULL,
   product_id    bigint NOT NULL,
@@ -59,5 +58,7 @@ CREATE TABLE product_transaction (
   transaction_id  bigint NOT NULL,
   qty             int NOT NULL,
   price           decimal(12, 2) NOT NULL,
+  FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (id)
 );

@@ -1,4 +1,4 @@
-package com.enjoy.kanjurbackend.model;
+package com.enjoy.kanjurbackend.user;
 
 import javax.persistence.*;
 
@@ -9,7 +9,7 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.enjoy.kanjurbackend.dto.user.CreateUserDto;
+import com.enjoy.kanjurbackend.user.dto.CreateUserDto;
 
 import lombok.Data;
 

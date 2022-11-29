@@ -1,4 +1,4 @@
-package com.enjoy.kanjurbackend.model;
+package com.enjoy.kanjurbackend.product;
 
 import java.sql.Timestamp;
 
@@ -11,7 +11,7 @@ import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.enjoy.kanjurbackend.dto.product.CreateProductDto;
+import com.enjoy.kanjurbackend.product.dto.CreateProductDto;
 
 import lombok.Data;
 
@@ -25,7 +25,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,7 +37,10 @@ public class Product {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private double price = 0.00;
+    private double price;
+
+    @Column(name = "stock", nullable = false)
+    private Integer stock;
 
     @Column(name = "created_by", nullable = false)
     private Integer createdBy;
@@ -52,14 +55,6 @@ public class Product {
 
     @Column(name = "is_deleted")
     private boolean isDeleted = Boolean.FALSE;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Product() {}
 
