@@ -1,9 +1,7 @@
 package com.enjoy.kanjurbackend.cart;
 
-import com.enjoy.kanjurbackend.cart.dto.*;
-
 public interface CartService {
-    Cart add(AddToCartDto dto);
+    Cart add(Cart cart);
     
     boolean remove(Integer cartId);
 }

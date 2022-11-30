@@ -31,7 +31,7 @@ public class UserController {
     @Operation(summary = "Register a new user")
     public ResponseEntity<?> create(@RequestBody CreateUserDto dto) {
         try {
-            User isExists = userService.find(Integer.parseInt(dto.id));
+            User isExists = this.userService.find(dto.id);
             if (isExists != null) {
                 return new ResponseEntity<BaseResponse<String>>(
                     new BaseResponse<String>(false, HttpStatus.FORBIDDEN, "User already registered."), 
@@ -40,7 +40,7 @@ public class UserController {
             }
         } catch (NoSuchElementException e) {}
 
-        User createdUser = userService.create(dto);
+        User createdUser = this.userService.create(dto);
 
         return new ResponseEntity<BaseResponse<User>>(
             new BaseResponse<User>(true, HttpStatus.CREATED, createdUser), 
@@ -50,10 +50,10 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "Login with existing user")
-    public ResponseEntity<?> create(@RequestBody UserLoginDto dto) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDto dto) {
         User user;
         try {
-            user = userService.login(dto);
+            user = this.userService.login(dto);
         } catch (Throwable t) {
             return new ResponseEntity<BaseResponse<String>>(
                 new BaseResponse<String>(false, HttpStatus.FORBIDDEN, t.getMessage()), 
@@ -71,13 +71,13 @@ public class UserController {
     @Operation(summary = "Get list of users")
     public ResponseEntity<BaseResponse<Page<User>>> findAll(
         @RequestParam(value = "keyword", required = false) String keyword,
-        @RequestParam(value = "skip") Integer skip, 
-        @RequestParam(value = "take") Integer take
+        @RequestParam(value = "skip", defaultValue = "0") Integer skip, 
+        @RequestParam(value = "take", defaultValue = "10") Integer take
     ) {
         if (skip == null) skip = 0;
         if (take == null) take = 10;
         
-        Page<User> userData = userService.find(skip, take, keyword);
+        Page<User> userData = this.userService.find(skip, take, keyword);
 
         return new ResponseEntity<BaseResponse<Page<User>>>(
             new BaseResponse<Page<User>>(true, HttpStatus.OK, userData), 
@@ -89,7 +89,7 @@ public class UserController {
     @Operation(summary = "Get user by Id")
     public ResponseEntity<?> get(@PathVariable Integer userId) {
         try {
-            User user = userService.find(userId);
+            User user = this.userService.find(userId);
             if (user == null) {
                 throw new NotFoundException();
             }
@@ -110,14 +110,14 @@ public class UserController {
     @Operation(summary = "Get user's product by User Id")
     public ResponseEntity<?> getUserProduct(
         @PathVariable Integer userId,
-        @RequestParam("skip") Integer skip,
-        @RequestParam("take") Integer take
+        @RequestParam(value = "skip", defaultValue = "0") Integer skip, 
+        @RequestParam(value = "take", defaultValue = "10") Integer take
     ) {
         return new ResponseEntity<BaseResponse<Page<Product>>>(
             new BaseResponse<Page<Product>>(
                 true, 
                 HttpStatus.OK, 
-                userService.getUserProduct(userId, skip, take)
+                this.userService.getUserProduct(userId, skip, take)
             ), 
             HttpStatus.OK
         );
@@ -127,14 +127,14 @@ public class UserController {
     @Operation(summary = "Get user's cart by User Id")
     public ResponseEntity<?> getUserCart(
         @PathVariable Integer userId,
-        @RequestParam("skip") Integer skip,
-        @RequestParam("take") Integer take
+        @RequestParam(value = "skip", defaultValue = "0") Integer skip, 
+        @RequestParam(value = "take", defaultValue = "10") Integer take
     ) {
         return new ResponseEntity<BaseResponse<Page<Cart>>>(
             new BaseResponse<Page<Cart>>(
                 true, 
                 HttpStatus.OK, 
-                userService.getUserCart(userId, skip, take)
+                this.userService.getUserCart(userId, skip, take)
             ), 
             HttpStatus.OK
         );
@@ -144,14 +144,14 @@ public class UserController {
     @Operation(summary = "Get user's transaction by User Id")
     public ResponseEntity<?> getUserTransaction(
         @PathVariable Integer userId,
-        @RequestParam("skip") Integer skip,
-        @RequestParam("take") Integer take
+        @RequestParam(value = "skip", defaultValue = "0") Integer skip, 
+        @RequestParam(value = "take", defaultValue = "10") Integer take
     ) {
         return new ResponseEntity<BaseResponse<Page<Transaction>>>(
             new BaseResponse<Page<Transaction>>(
                 true, 
                 HttpStatus.OK, 
-                userService.getUserTransaction(userId, skip, take)
+                this.userService.getUserTransaction(userId, skip, take)
             ), 
             HttpStatus.OK
         );
@@ -160,13 +160,11 @@ public class UserController {
     @PutMapping("/{userId}")
     @Operation(summary = "Update user")
     public ResponseEntity<?> update(
-        @RequestBody UpdateUserDto user, 
+        @RequestBody UpdateUserDto dto, 
         @PathVariable Integer userId
     ) {
         try {
-            User userData = userService.find(userId);
-
-            // TODO: Update user data (name and password only)
+            this.userService.update(userId, dto);
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -178,7 +176,7 @@ public class UserController {
     @Operation(summary = "Delete user by Id")
     public ResponseEntity<BaseResponse<String>> delete(@PathVariable Integer userId) {
         try {
-            userService.find(userId);
+            this.userService.find(userId);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<BaseResponse<String>>(
                 new BaseResponse<String>(false, HttpStatus.NOT_FOUND, "User not found."), 

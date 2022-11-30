@@ -1,13 +1,18 @@
 package com.enjoy.kanjurbackend.product_transaction;
 
-import com.enjoy.kanjurbackend.product_transaction.dto.CreateProductTransactionDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class ProductTransactionServiceImpl implements ProductTransactionService {
+    @Autowired
+    ProductTransactionRepository productTransactionRepository;
 
     @Override
-    public ProductTransaction create(CreateProductTransactionDto dto) {
-        // TODO Auto-generated method stub
-        return null;
+    public ProductTransaction create(ProductTransaction productTransaction) {
+        return this.productTransactionRepository.save(productTransaction);
     }
     
 }

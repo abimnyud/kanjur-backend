@@ -61,7 +61,7 @@ public class User {
     public User() {}
 
     public User(CreateUserDto dto) {
-        this.id = Integer.parseInt(dto.id);
+        this.id = dto.id;
         this.password = dto.password;
         this.name = dto.name;
     }

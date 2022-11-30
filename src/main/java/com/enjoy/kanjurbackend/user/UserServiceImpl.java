@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(CreateUserDto dto) {
-        User existsUser = userRepository.getById(Integer.parseInt(dto.id));
+        User existsUser = userRepository.getById(dto.id);
         User user;
 
         if (existsUser != null && existsUser.isDeleted() == true) {
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(UserLoginDto dto) throws Error {
-        User currentUser = userRepository.getUser(Integer.parseInt(dto.id));
+        User currentUser = userRepository.getUser(dto.id);
 
         try {
             Encryptor encryptor = new Encryptor();
