@@ -62,10 +62,9 @@ public class UserServiceImpl implements UserService {
         // String encodedPassword = user.getPassword();
 
         try {
-            Encryptor encryptor = new Encryptor();
             String encryptedPassword;
 
-            encryptedPassword = encryptor.encryptString(user.getPassword());
+            encryptedPassword = Encryptor.encryptString(user.getPassword());
 
             user.setPassword(encryptedPassword);
 
@@ -88,10 +87,8 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository.getUser(dto.id);
 
         try {
-            Encryptor encryptor = new Encryptor();
-
             String encryptedPassword;
-            encryptedPassword = encryptor.encryptString(dto.password);
+            encryptedPassword = Encryptor.encryptString(dto.password);
             
             if (currentUser != null) {
                 /**

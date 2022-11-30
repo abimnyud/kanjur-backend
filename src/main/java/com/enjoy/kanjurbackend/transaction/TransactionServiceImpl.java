@@ -74,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
             double additionalAmount = amount - userDebt;
 
             if (additionalAmount >= 0) {
-                user.setDebt(0);
+                user.setDebt(0.00);
             } else {
                 user.setDebt(userDebt - amount);
             }
@@ -146,7 +146,7 @@ public class TransactionServiceImpl implements TransactionService {
                 /**
                  * If withdraw is exceed user's deposit, then update user's deposit and flag the transaction
                  */
-                user.setDeposit(0);
+                user.setDeposit(0.00);
                 newTransaction.setFlag(true);
             } else {
                 user.setDeposit(Math.abs(additionalAmount));
@@ -162,7 +162,7 @@ public class TransactionServiceImpl implements TransactionService {
                 /**
                  * If withdraw is exceed user's revenue, then add to debt and flag the transaction
                  */
-                user.setRevenue(0);
+                user.setRevenue(0.00);
                 
                 user.setDebt(userDebt + additionalAmount);
                 newTransaction.setFlag(true);
@@ -199,7 +199,7 @@ public class TransactionServiceImpl implements TransactionService {
             Double additionalAmount = amount - userDebt;
 
             if (additionalAmount > 0) {
-                user.setDebt(0);
+                user.setDebt(0.00);
                 user.setRevenue(additionalAmount);
             } else {
                 user.setDebt(userDebt - amount);
@@ -259,7 +259,7 @@ public class TransactionServiceImpl implements TransactionService {
                 additionalAmount = additionalAmount - userDebt;
 
                 if (additionalAmount >= 0) {
-                    user.setDebt(0);
+                    user.setDebt(0.00);
                 } else {
                     user.setDebt(userDebt - additionalAmount);
                 }
@@ -306,7 +306,6 @@ public class TransactionServiceImpl implements TransactionService {
              */
             product.setStock(product.getStock() - cart.getQty());
             this.productRepository.save(product);
-
         }
 
         return true;

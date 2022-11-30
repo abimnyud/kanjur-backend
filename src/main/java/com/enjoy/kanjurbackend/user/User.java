@@ -33,16 +33,16 @@ public class User {
     private String name;
 
     @Column(name = "revenue", nullable = false)
-    private double revenue = 0.00;
+    private Double revenue = 0.00;
     
     @Column(name = "deposit", nullable = false)
-    private double deposit = 0.00;
+    private Double deposit = 0.00;
     
     @Column(name = "withdraw", nullable = false)
-    private double withdraw = 0.00;
+    private Double withdraw = 0.00;
     
     @Column(name = "debt", nullable = false)
-    private double debt = 0.00;
+    private Double debt = 0.00;
 
     @Column(name = "flag", nullable = false)
     private boolean flag = Boolean.FALSE;
@@ -57,6 +57,18 @@ public class User {
 
     @Column(name = "is_deleted")
     private boolean isDeleted = Boolean.FALSE;
+
+    // @ManyToMany(fetch = FetchType.LAZY)
+    // @JoinTable(
+    //     name = "carts",
+    //     joinColumns = @JoinColumn(name = "product_id"),
+    //     inverseJoinColumns = @JoinColumn(name = "user_id")
+    // )
+    // Set<Product> cartItems;
+
+    // @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    // Set<Transaction> transactions;
+
 
     public User() {}
 

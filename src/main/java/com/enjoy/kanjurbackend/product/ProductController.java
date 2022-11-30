@@ -120,21 +120,19 @@ public class ProductController {
     @PutMapping("/{productId}")
     @Operation(summary = "Update product")
     public ResponseEntity<?> update(
-        @RequestBody UpdateProductDto product, 
+        @RequestBody UpdateProductDto dto, 
         @PathVariable Integer productId
     ) {
-        Product productData = this.productService.find(productId);
-    
-        // TODO: Update product data (name, image, description, price, stock)
-    
-        if (productData == null) {
-            return new ResponseEntity<BaseResponse<String>>(
-                new BaseResponse<String>(false, HttpStatus.NOT_FOUND, "Product not found."), 
-                HttpStatus.NOT_FOUND
-            );
-        }
+        Product updatedProduct = this.productService.update(productId, dto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<BaseResponse<Product>>(
+            new BaseResponse<Product>(
+                true, 
+                HttpStatus.OK, 
+                updatedProduct
+            ), 
+            HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{productId}")
