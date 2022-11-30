@@ -25,8 +25,8 @@ public class TransactionController {
     @GetMapping("")
     @Operation(summary = "Get list of transactions")
     public ResponseEntity<BaseResponse<Page<Transaction>>> findAll(
-        @RequestParam(value = "skip") Integer skip, 
-        @RequestParam(value = "take") Integer take
+        @RequestParam(value = "skip", defaultValue = "0") Integer skip, 
+        @RequestParam(value = "take", defaultValue = "10") Integer take
     ) {
         if (skip == null) skip = 0;
         if (take == null) take = 10;
@@ -42,11 +42,8 @@ public class TransactionController {
     @GetMapping("/balance")
     @Operation(summary = "Get canteen's balance")
     public ResponseEntity<BaseResponse<Double>> getBalance() {
-        Double currBalance = Double.parseDouble(transactionService.getBalance());
-        currBalance = (currBalance == null) ? 0 : currBalance;
-
         return new ResponseEntity<BaseResponse<Double>>(
-            new BaseResponse<Double>(true, HttpStatus.OK, currBalance), 
+            new BaseResponse<Double>(true, HttpStatus.OK, transactionService.getBalance()), 
             HttpStatus.OK
         );
     }
@@ -93,5 +90,32 @@ public class TransactionController {
             ), 
             HttpStatus.OK
         );
+    }
+
+    @PostMapping("/checkout")
+    @Operation(summary = "Withdraw money from canteen's balance")
+    public ResponseEntity<?> checkout(
+        @RequestParam(value = "userId") Integer userId,
+        @RequestParam(value = "deposit") Double deposit
+    ) {
+        try {
+            transactionService.checkout(userId, deposit);
+
+            return new ResponseEntity<BaseResponse<String>>(
+                new BaseResponse<String>(
+                    false, HttpStatus.OK, 
+                    "Checkout success."
+                ), 
+                HttpStatus.OK
+            );
+        } catch(Throwable t) {
+            return new ResponseEntity<BaseResponse<String>>(
+                new BaseResponse<String>(
+                    false, HttpStatus.FORBIDDEN, 
+                    t.getMessage()
+                ), 
+                HttpStatus.FORBIDDEN
+            );
+        }
     }
 }

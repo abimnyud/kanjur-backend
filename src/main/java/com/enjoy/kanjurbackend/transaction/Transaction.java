@@ -1,10 +1,13 @@
 package com.enjoy.kanjurbackend.transaction;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.enjoy.kanjurbackend.product.Product;
 
 import lombok.Data;
 
@@ -38,6 +41,14 @@ public class Transaction {
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @ManyToMany
+    @JoinTable(
+        name = "product_transaction",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "transaction_id")
+    )
+    Set<Product> items;
 
     public Transaction() {}
 }

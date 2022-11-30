@@ -1,6 +1,7 @@
 package com.enjoy.kanjurbackend.product;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.enjoy.kanjurbackend.product.dto.CreateProductDto;
+import com.enjoy.kanjurbackend.transaction.Transaction;
 
 import lombok.Data;
 
@@ -23,7 +25,7 @@ import lombok.Data;
 @Filter(name = "deletedProductFilter", condition = "is_deleted = :isDeleted")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -56,6 +58,9 @@ public class Product {
     @Column(name = "is_deleted")
     private boolean isDeleted = Boolean.FALSE;
 
+    @ManyToMany
+    Set<Transaction> transactions;
+
     public Product() {}
 
     public Product(CreateProductDto dto) {
@@ -63,6 +68,7 @@ public class Product {
         this.image = dto.image;
         this.description = dto.description;
         this.price = dto.price;
+        this.stock = dto.stock;
         this.createdBy = dto.createdBy;
     }
 }

@@ -5,5 +5,5 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductTransactionRepository extends JpaRepository<ProductTransaction, Integer> {
-    List<ProductTransaction> getByTransactionId(Integer userId);
+    List<ProductTransaction> findAllByTransactionId(Integer userId);
 }

@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.enjoy.kanjurbackend.cart.dto.*;
-
 @Service
 @Transactional
 public class CartServiceImpl implements CartService {
@@ -13,16 +11,16 @@ public class CartServiceImpl implements CartService {
     CartRepository cartRepository;
 
     @Override
-    public Cart add(AddToCartDto dto) {
-        Cart isExists = cartRepository.getByUserIdAndProductId(dto.userId, dto.productId);
+    public Cart add(Cart cart) {
+        Cart isExists = cartRepository.getByUserIdAndProductId(cart.getUserId(), cart.getProductId());
 
         if (isExists != null) {
-            isExists.setQty(isExists.getQty() + dto.qty);
+            isExists.setQty(isExists.getQty() + cart.getQty());
 
             return cartRepository.save(isExists);
         }
 
-        return cartRepository.save(new Cart(dto));
+        return cartRepository.save(cart);
     }
 
     @Override
