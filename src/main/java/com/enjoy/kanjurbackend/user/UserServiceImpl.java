@@ -9,6 +9,9 @@ import com.enjoy.kanjurbackend.transaction.TransactionRepository;
 import com.enjoy.kanjurbackend.user.dto.*;
 
 // import java.security.SecureRandom;
+// import java.math.BigInteger;
+// import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.EntityManager;
 
@@ -56,12 +59,26 @@ public class UserServiceImpl implements UserService {
          */
         // BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(Common.ENCODE_STRENGTH, new SecureRandom());
         // String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-        String encodedPassword = user.getPassword();
+        // String encodedPassword = user.getPassword();
+
+        try {
+            Encryptor encryptor = new Encryptor();
+            String encryptedPassword;
+
+            encryptedPassword = encryptor.encryptString(user.getPassword());
+
+            user.setPassword(encryptedPassword);
+
+        } catch(NoSuchAlgorithmException nsae) {
+            nsae.getMessage();
+        }
+
 
         /**
          * Update password with the encrypted one
          */
-        user.setPassword(encodedPassword);
+        // user.setPassword(encodedPassword);
+        // user.setPassword(encryptedPassword);
         
         return userRepository.save(user);
     }
@@ -70,18 +87,28 @@ public class UserServiceImpl implements UserService {
     public User login(UserLoginDto dto) throws Error {
         User currentUser = userRepository.getUser(Integer.parseInt(dto.id));
 
-        if (currentUser != null) {
-            /**
-             * Compare password
-             */
-            // BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(Common.ENCODE_STRENGTH, new SecureRandom());
-            // boolean isValid = bCryptPasswordEncoder.matches(dto.password, currentUser.getPassword());
-            boolean isValid = currentUser.getPassword().equals(dto.password);
+        try {
+            Encryptor encryptor = new Encryptor();
 
-            if (!isValid) {
-                throw new Error("Invalid password");
+            String encryptedPassword;
+            encryptedPassword = encryptor.encryptString(dto.password);
+            
+            if (currentUser != null) {
+                /**
+                 * Compare password
+                 */
+                // BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(Common.ENCODE_STRENGTH, new SecureRandom());
+                // boolean isValid = bCryptPasswordEncoder.matches(dto.password, currentUser.getPassword());
+                boolean isValid = encryptedPassword.equals(currentUser.getPassword());
+
+                if (!isValid) {
+                    throw new Error("Invalid password");
+                };
             };
-        };
+
+        } catch(NoSuchAlgorithmException nsae) {
+            nsae.getMessage();
+        }
 
         return currentUser;
     }
