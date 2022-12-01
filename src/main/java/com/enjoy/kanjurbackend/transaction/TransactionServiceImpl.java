@@ -131,6 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
         double userRevenue = user.getRevenue();
         double userDeposit = user.getDeposit();
         double additionalAmount = amount;
+        user.setWithdraw(user.getWithdraw() + additionalAmount);
 
         /**
          * If withdraw amount is more than userDeposit + userRevenue, 
@@ -158,7 +159,7 @@ public class TransactionServiceImpl implements TransactionService {
              */
             additionalAmount -= userRevenue;
 
-            if (additionalAmount > 0) {
+            if (additionalAmount >= 0) {
                 /**
                  * If withdraw is exceed user's revenue, then add to debt and flag the transaction
                  */
@@ -252,7 +253,7 @@ public class TransactionServiceImpl implements TransactionService {
          * Check if deposit more than the total price,
          * then add to user's balance
          */
-        if (deposit > totalPrice) {
+        if (deposit >= totalPrice) {
             Double additionalAmount = deposit - totalPrice;
             
             if (userDebt > 0) {
@@ -306,6 +307,7 @@ public class TransactionServiceImpl implements TransactionService {
              */
             product.setStock(product.getStock() - cart.getQty());
             this.productRepository.save(product);
+            this.cartRepository.delete(cart);
         }
 
         return true;

@@ -27,7 +27,7 @@ public class Cart {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="product_id", insertable = false, updatable = false)
     public Product product;
 
