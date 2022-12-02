@@ -1,13 +1,7 @@
 package com.enjoy.kanjurbackend;
 
-import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KanjurBackendApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+class KanjurBackendApplicationTests { }

@@ -1,0 +1,142 @@
+@startuml class
+class UserController
+class ProductController
+class TransactionController
+
+interface UserService {
+    User create()
+    User login()
+    User find()
+    Page<User> find()
+    Page<Product> getUserProduct()
+    Page<Cart> getUserCart()
+    Page<Transaction> getUserTransaction()
+    User update()
+    boolean delete()
+}
+
+interface ProductService {
+    Product create()
+    Product find()
+    Page<Product> find()
+    Product update()
+    boolean delete()
+}
+
+interface ProductTransactionService {
+    ProductTransaction create()
+}
+
+interface TransactionService {
+    Page<Transaction> find()
+    Double getBalance()
+    boolean deposit()
+    boolean withdraw()
+    boolean addUserRevenue()
+    boolean checkout()
+}
+
+interface CartService {
+    Cart add()
+    boolean remove()
+}
+
+interface UserRepository {
+    User getUser()
+    User getById()
+    Page<User> findAllByNameLikeAndIsDeletedFalse()
+}
+
+interface ProductRepository {
+    Product getProduct()
+    Page<Product> findAllByNameLikeAndIsDeletedFalse()
+    Page<Product> findByCreatedBy()
+}
+
+interface   ProductTransactionRepository {
+    List<ProductTransaction> findAllByTransactionId()
+}
+
+interface   CartRepository {
+    List<Cart> findAllByUserId()
+    Page<Cart> findByUserId()
+    Cart getByUserIdAndProductId()
+}
+
+interface   TransactionRepository {
+    String getBalance()
+    Page<Transaction> findByUserId()
+}
+
+class User {
+    -Integer id
+    -String password
+    -String name
+    -Double revenue
+    -Double deposit
+    -Double withdraw
+    -Double debt
+    -boolean flag
+    -Timestamp createdAt
+    -Timestamp updatedAt
+    -boolean isDeleted
+}
+
+class Product {
+    -Integer id
+    -String name
+    -String image
+    -String description
+    -Double price
+    -Integer stock
+    -Integer createdBy
+    -Timestamp createdAt
+    -Timestamp updatedAt
+    -boolean isDeleted
+}
+
+class ProductTransaction {
+    -Integer id
+    -Integer transactionId
+    -Integer productId
+    -Integer qty
+    -Double price
+}
+
+class Transaction {
+    -Integer id
+    -Integer userId
+    -Double totalPrice
+    -Double deposit
+    -Double withdraw
+    -Double balance
+    -boolean flag
+    -Timestamp createdAt
+}
+
+class Cart {
+    -Integer id
+    -Integer userId
+    -Integer productId
+    -Integer qty
+    -Double price
+}
+
+UserController <-- UserService
+ProductController <-- ProductService
+TransactionController <-- ProductTransactionService
+TransactionController <-- TransactionService
+UserController <-- CartService
+
+UserService <-- UserRepository
+ProductService <-- ProductRepository
+ProductTransactionService <-- ProductTransactionRepository
+TransactionService <-- TransactionRepository
+CartService <-- CartRepository
+
+UserRepository o-- User
+ProductRepository o-- Product
+ProductTransactionRepository o-- ProductTransaction
+TransactionRepository o-- Transaction
+CartRepository o-- Cart
+@enduml
