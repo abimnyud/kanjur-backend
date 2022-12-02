@@ -12,6 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.enjoy.kanjurbackend.product.dto.CreateProductDto;
+// import com.enjoy.kanjurbackend.user.User;
 
 import lombok.Data;
 
@@ -23,7 +24,7 @@ import lombok.Data;
 @Filter(name = "deletedProductFilter", condition = "is_deleted = :isDeleted")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -37,7 +38,7 @@ public class Product {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private Double price;
 
     @Column(name = "stock", nullable = false)
     private Integer stock;
@@ -56,6 +57,10 @@ public class Product {
     @Column(name = "is_deleted")
     private boolean isDeleted = Boolean.FALSE;
 
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name="created_by", insertable = false, updatable = false)
+    // public User user;
+
     public Product() {}
 
     public Product(CreateProductDto dto) {
@@ -63,6 +68,7 @@ public class Product {
         this.image = dto.image;
         this.description = dto.description;
         this.price = dto.price;
+        this.stock = dto.stock;
         this.createdBy = dto.createdBy;
     }
 }

@@ -23,7 +23,7 @@ public class ProductTransaction {
     private Integer qty;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private Double price;
 
     public ProductTransaction() {}
 }

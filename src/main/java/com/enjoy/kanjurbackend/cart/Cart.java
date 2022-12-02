@@ -2,7 +2,7 @@ package com.enjoy.kanjurbackend.cart;
 
 import javax.persistence.*;
 
-import com.enjoy.kanjurbackend.cart.dto.AddToCartDto;
+import com.enjoy.kanjurbackend.product.Product;
 
 import lombok.Data;
 
@@ -25,14 +25,18 @@ public class Cart {
     private Integer qty;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private Double price;
+
+    @ManyToOne()
+    @JoinColumn(name="product_id", insertable = false, updatable = false)
+    public Product product;
 
     public Cart() { }
 
-    public Cart(AddToCartDto dto) {
-        this.userId = dto.userId;
-        this.productId = dto.productId;
-        this.qty = dto.qty;
-        this.price = dto.price;
+    public Cart(Integer userId, Integer productId, Integer qty, Double price) {
+        this.userId = userId;
+        this.productId = productId;
+        this.qty = qty;
+        this.price = qty * price;
     }
 }

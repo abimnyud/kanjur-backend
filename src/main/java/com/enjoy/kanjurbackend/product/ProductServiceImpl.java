@@ -25,29 +25,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(CreateProductDto dto) {
-        return productRepository.save(new Product(dto));
+        return this.productRepository.save(new Product(dto));
     }
 
     @Override
     public Product find(Integer productId) {
-        return productRepository.getProduct(productId);
+        Product productData = this.productRepository.getProduct(productId);
+
+        return productData;
     }
 
     @Override
     public Page<Product> find(Integer skip, Integer take, String keyword) {
-        Session session = entityManager.unwrap(Session.class);
+        Session session = this.entityManager.unwrap(Session.class);
         Filter filter = session.enableFilter("deletedUserFilter");
         filter.setParameter("isDeleted", false);
 
         Page<Product> productData;
 
         if (keyword != null) {
-            productData = productRepository.findAllByNameLikeAndIsDeletedFalse(
+            productData = this.productRepository.findAllByNameLikeAndIsDeletedFalse(
                 "%" + keyword + "%", 
                 PageRequest.of(skip, take)
             );
         } else {
-            productData = productRepository.findAll(PageRequest.of(skip, take));
+            productData = this.productRepository.findAll(PageRequest.of(skip, take));
         }
 
         session.disableFilter("deletedUserFilter");
@@ -56,20 +58,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update(Integer productId, UpdateProductDto product) {
-        Product productData = productRepository.findById(productId).get();
+        Product productData = this.find(productId);
 
         productData.setName(product.name);
         productData.setDescription(product.description);
         productData.setImage(product.image);
         productData.setPrice(product.price);
-        productData.setPrice(product.stock);
+        productData.setStock(product.stock);
 
-        return productRepository.save(productData);
+        return productData;
     }
 
     @Override
     public boolean delete(Integer productId) {
-        productRepository.deleteById(productId);
+        this.productRepository.deleteById(productId);
 
         return true;
     }
