@@ -12,6 +12,8 @@ import com.enjoy.kanjurbackend.user.dto.*;
 // import java.math.BigInteger;
 // import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -42,10 +44,35 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private EntityManager entityManager;
 
+    private boolean checkId(Integer id) {
+        String strValue = id.toString();
+
+        Integer sum = 0;
+        Integer twoLastDigit = Integer.parseInt(strValue.substring(3, 5)); // last two index
+
+        char[] chars = strValue.substring(0, 4).toCharArray();
+
+        List<Character> firstThreeDigitList = new ArrayList<Character>();
+
+        for (char c : chars) {
+            firstThreeDigitList.add(c);
+        }
+
+        for (char c : firstThreeDigitList) {
+            Integer n = Integer.parseInt(Character.toString(c));
+            sum += n;
+        }
+
+        if (sum != twoLastDigit) throw new Error("Student ID is not valid.");
+        return true;
+    }
+
     @Override
-    public User create(CreateUserDto dto) {
+    public User create(CreateUserDto dto) throws Error {
         User existsUser = userRepository.getById(dto.id);
         User user;
+
+        this.checkId(dto.id);
 
         if (existsUser != null && existsUser.isDeleted() == true) {
             existsUser.setDeleted(false);

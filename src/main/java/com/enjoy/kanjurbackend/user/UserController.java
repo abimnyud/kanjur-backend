@@ -40,7 +40,16 @@ public class UserController {
             }
         } catch (NoSuchElementException e) {}
 
-        User createdUser = this.userService.create(dto);
+        User createdUser;
+        try {
+             createdUser = this.userService.create(dto);
+        } catch(Throwable t) {
+            return new ResponseEntity<BaseResponse<String>>(
+                new BaseResponse<String>(true, HttpStatus.BAD_REQUEST, t.getMessage()), 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
 
         return new ResponseEntity<BaseResponse<User>>(
             new BaseResponse<User>(true, HttpStatus.CREATED, createdUser), 
